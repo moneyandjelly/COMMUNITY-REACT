@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";  // useState 추가
+import React, { useEffect, useState } from "react"; // useState 추가
 import "./styles/index.scss";
 import { requestBoardList } from "./../../apis/api/Board/requestboardlist";
-
+import WriteButton from "./components/WriteButton/WriteButton";
 interface BoardItem {
   boardId: number;
   title: string;
@@ -23,7 +23,7 @@ const Board: React.FC = () => {
     const page = 1;
     const perPage = 10;
     const data = await requestBoardList(page, perPage);
-    console.log(data)
+    console.log(data);
     if (data) {
       setBoardData(data.boardList);
       setTotalPages(data.totalPages);
@@ -39,7 +39,7 @@ const Board: React.FC = () => {
       <h2 className="board-title">게시판</h2>
 
       <div className="board-header">
-        <button className="write-button">글쓰기</button>
+        <WriteButton />
       </div>
 
       <table className="board-table">
@@ -66,7 +66,9 @@ const Board: React.FC = () => {
       <div className="pagination">
         <button>&lt;</button>
         {[...Array(totalPages)].map((_, i) => (
-          <button className="active" key={i + 1}>{i + 1}</button>
+          <button className="active" key={i + 1}>
+            {i + 1}
+          </button>
         ))}
         <button>&gt;</button>
       </div>
