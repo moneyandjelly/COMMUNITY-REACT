@@ -13,6 +13,7 @@ function Index() {
           const response = await requestAccessToken(code);
           if (response) {
             console.log(response);
+            localStorage.setItem('userToken', response);
             window.location.href = "/";
           }
         } catch (error) {
