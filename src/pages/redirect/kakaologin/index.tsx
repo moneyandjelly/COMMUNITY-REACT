@@ -13,7 +13,19 @@ function Index() {
           const response = await requestAccessToken(code);
           if (response) {
             console.log(response);
-            localStorage.setItem('userToken', response);
+
+            const setLocalStorageTimer = (key, value, time) => {
+              let now = new Date();
+              let item = {
+                value: value,
+                expireTime: now.getTime() + time,
+              };
+              localStorage.setItem(key, JSON.stringify(item));
+            };
+
+            const expirationTime = 43200000;
+            setLocalStorageTimer("userToken", response, expirationTime);
+
             window.location.href = "/";
           }
         } catch (error) {
