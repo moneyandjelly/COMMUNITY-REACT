@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import LoginPage from "@pages/login/index";
 import BoardListPage from "@pages/board/index";
 import RegisterBoard from "@/pages/board/components/RegisterBoard/RegisterBoard";
+import ReadBoard from "@/pages/board/components/ReadBoard/ReadBoard";
 // 리다이렉트
 import KakaoRedirect from "@pages/redirect/kakaologin/index";
 
@@ -20,6 +21,7 @@ function App() {
         ></Route>
         <Route path="/board/list" element={<BoardListPage />}></Route>
         <Route path="/board/register" element={<RegisterBoard />}></Route>
+        <Route path="/board/read/:boardId" element={<ReadBoard />}></Route>
       </Routes>
     </BrowserRouter>
   );

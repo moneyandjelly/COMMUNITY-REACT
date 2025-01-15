@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react"; // useState 추가
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./styles/index.scss";
 import { requestBoardList } from "./../../apis/api/Board/requestboardlist";
 import WriteButton from "./components/WriteButton/WriteButton";
+
 interface BoardItem {
   boardId: number;
   title: string;
@@ -9,13 +11,8 @@ interface BoardItem {
   createDate: string;
 }
 
-interface BoardResponse {
-  boardList: BoardItem[];
-  totalItems: number;
-  totalPages: number;
-}
-
 const Board: React.FC = () => {
+  const navigate = useNavigate();
   const [boardData, setBoardData] = useState<BoardItem[]>([]);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -33,6 +30,10 @@ const Board: React.FC = () => {
   useEffect(() => {
     getBoardList();
   }, []);
+
+  const handlePostClick = (boardId: number) => {
+    navigate(`/board/read/${boardId}`);
+  };
 
   return (
     <div className="board-container">
@@ -53,7 +54,12 @@ const Board: React.FC = () => {
         </thead>
         <tbody>
           {boardData.map((item) => (
-            <tr key={item.boardId}>
+            <tr
+              key={item.boardId}
+              onClick={() => handlePostClick(item.boardId)}
+              style={{ cursor: "pointer" }}
+              className="board-row"
+            >
               <td>{item.boardId}</td>
               <td className="title-cell">{item.title}</td>
               <td>{item.nickname}</td>
