@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./ReadBoard.scss";
 import { requestReadPost } from "../../../../apis/api/Board/requestReadPost";
+import { requestDeletePost } from "../../../../apis/api/Board/requestDeletePost";
 
 interface BoardData {
   boardId: number;
@@ -35,6 +36,17 @@ const ReadBoard: React.FC = () => {
       console.error(err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const deleteBoard = async () => {
+    try {
+      const userToken = localStorage.getItem("userToken");
+      const response = await requestDeletePost(boardId, userToken);
+      console.log("삭제 콘솔", response);
+    } catch (err) {
+      setError("게시글 삭제 실패");
+      console.error(err);
     }
   };
 
@@ -73,7 +85,7 @@ const ReadBoard: React.FC = () => {
           className="action-button delete"
           onClick={() => {
             if (window.confirm("정말 삭제하시겠습니까?")) {
-              // 삭제 API 호출 로직
+              deleteBoard();
             }
           }}
         >
