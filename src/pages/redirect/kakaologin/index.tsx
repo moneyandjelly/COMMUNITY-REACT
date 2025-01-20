@@ -1,7 +1,11 @@
 import { useEffect } from "react";
 import { requestAccessToken } from "@apis/api/KakaoAuth/requestaccesstoken";
+import { requestUserInfo } from "@apis/api/AccountProfile/requestUserInfo";
+import { useNavigate } from "react-router-dom";
 
 function Index() {
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchAccessToken = async () => {
       const code = new URL(document.location.toString()).searchParams.get(
@@ -33,8 +37,13 @@ function Index() {
         }
       }
     };
-
+    const getUserInfo = async () => {
+      const storedToken = localStorage.getItem("userToken");
+      const userInfo = await requestUserInfo(storedToken);
+      console.log("유저 인포 출력", userInfo);
+    };
     fetchAccessToken();
+    getUserInfo();
   }, []);
 
   return <div>로그인 처리 중</div>;
