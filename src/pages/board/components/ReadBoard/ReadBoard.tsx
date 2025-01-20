@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./ReadBoard.scss";
 import { requestReadPost } from "../../../../apis/api/Board/requestReadPost";
 import { requestDeletePost } from "../../../../apis/api/Board/requestDeletePost";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../store/store";
 
 interface BoardData {
   boardId: number;
@@ -10,15 +12,19 @@ interface BoardData {
   nickname: string;
   createDate: string;
   content: string;
+  writerAccountId: string;
 }
 
 const ReadBoard: React.FC = () => {
-  const { boardId } = useParams<{ boardId: string }>();
+  const { account_id } = useSelector((state: RootState) => state.auth);
+  const { boardId } = useParams<{
+    boardId: string;
+  }>();
+
   const navigate = useNavigate();
   const [boardData, setBoardData] = useState<BoardData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-
   const getBoardInfo = async () => {
     try {
       setIsLoading(true);
@@ -27,7 +33,6 @@ const ReadBoard: React.FC = () => {
         return;
       }
       const response = await requestReadPost(boardId);
-
       if (response) {
         setBoardData(response);
       }
@@ -75,22 +80,26 @@ const ReadBoard: React.FC = () => {
       <div className="post-content">{boardData.content}</div>
 
       <div className="post-actions">
-        <button
-          className="action-button edit"
-          onClick={() => navigate(`/board/edit/${boardId}`)}
-        >
-          수정
-        </button>
-        <button
-          className="action-button delete"
-          onClick={() => {
-            if (window.confirm("정말 삭제하시겠습니까?")) {
-              deleteBoard();
-            }
-          }}
-        >
-          삭제
-        </button>
+        {boardData.writerAccountId === account_id && (
+          <>
+            <button
+              className="action-button edit"
+              onClick={() => navigate(`/board/edit/${boardId}`)}
+            >
+              수정
+            </button>
+            <button
+              className="action-button delete"
+              onClick={() => {
+                if (window.confirm("정말 삭제하시겠습니까?")) {
+                  deleteBoard();
+                }
+              }}
+            >
+              삭제
+            </button>
+          </>
+        )}
         <button className="action-button list" onClick={handleList}>
           목록
         </button>
