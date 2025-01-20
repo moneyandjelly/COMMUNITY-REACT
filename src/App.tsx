@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // 페이지 컴포넌트
+import HomePage from "@pages/home/index";
 import LoginPage from "@pages/login/index";
 import BoardListPage from "@pages/board/index";
 import RegisterBoard from "@/pages/board/components/RegisterBoard/RegisterBoard";
@@ -14,6 +15,7 @@ function App() {
     <BrowserRouter>
       <ToastContainer />
       <Routes>
+        <Route path="/" element={<HomePage />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route
           path="/kakao-oauth/redirect-access-token"
