@@ -12,6 +12,7 @@
       "@apis/*": ["apis/*"],
       "@pages/*": ["pages/*"]
     },
+    "noImplicitAny": false,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
