@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  DOCKER_IMAGE: ghcr.io/${{ github.actor }}/nuxt-frontend:latest
+  DOCKER_IMAGE: ghcr.io/${{ github.actor }}/vite-frontend:latest
 
 jobs:
   build:
@@ -45,7 +45,7 @@ jobs:
       run: |
         docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GHCR_TOKEN }}
         docker buildx create --name builder --use
-        docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile -t ghcr.io/${{ github.actor }}/nuxt-frontend:latest \
+        docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile -t ghcr.io/${{ github.actor }}/vite-frontend:latest \
           --push .
         docker logout
 
@@ -62,13 +62,13 @@ jobs:
   deploy:
     name: Deploy to Production
     needs: build
-    runs-on: [ self-hosted, deploy-nuxt-frontend ]
+    runs-on: [ self-hosted, deploy-vite-frontend ]
     steps:
       - name: Deploy to Production
         run: |
           echo "ready for deploy"
 
-          cd /home/ec2-user/nuxt/frontend
+          cd /home/ec2-user/vite/frontend
           docker-compose down
 
           echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin

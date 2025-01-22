@@ -13,7 +13,7 @@ RUN npm install
 # 소스 코드 복사
 COPY . .
 
-# Nuxt의 production 모드로 빌드
+# Vite의 production 모드로 빌드
 RUN npm run build
 
 # 2단계: 실행 단계
