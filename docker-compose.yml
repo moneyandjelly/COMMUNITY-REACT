@@ -1,6 +1,11 @@
 version: "3.7"
 services:
   vite:
+    healthcheck:
+    test: ["CMD", "curl", "-f", "http://43.201.229.155:3000"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
     image: ghcr.io/${GITHUB_ACTOR}/vite-frontend:latest
     container_name: frontend-deploy-vite
     command: "npm run start"
