@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./ReadBoard.scss";
-import { requestReadPost } from "../../../../apis/api/Board/requestReadPost";
-import { requestDeletePost } from "../../../../apis/api/Board/requestDeletePost";
+import { requestReadPost } from "@apis/api/Board/requestReadPost";
+import { requestDeletePost } from "apis/api/Board/requestDeletePost";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store/store";
 
