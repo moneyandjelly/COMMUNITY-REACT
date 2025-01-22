@@ -1,8 +1,8 @@
 version: "3.7"
 services:
-  nuxt:
-    image: ghcr.io/${GITHUB_ACTOR}/nuxt-frontend:latest
-    container_name: frontend-deploy-nuxt
+  vite:
+    image: ghcr.io/${GITHUB_ACTOR}/vite-frontend:latest
+    container_name: frontend-deploy-vite
     command: "npm run start"
     ports:
       - "3000:3000"
