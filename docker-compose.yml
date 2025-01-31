@@ -2,13 +2,15 @@ version: "3.7"
 services:
   vite:
     healthcheck:
-    test: ["CMD", "curl", "-f", "http://43.201.229.155:3000"]
-    interval: 30s
-    timeout: 10s
-    retries: 3
+      test: ["CMD", "curl", "-f", "http://vite:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     image: ghcr.io/${GITHUB_ACTOR}/vite-frontend:latest
     container_name: frontend-deploy-vite
-    command: "npm run dev"
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     environment:
@@ -26,6 +28,8 @@ services:
       - "80:80"
     networks:
       - app
+    depends_on:
+      - vite
 
 networks:
   app:
