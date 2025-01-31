@@ -28,5 +28,8 @@ COPY --from=builder /app ./
 # 포트 설정 (React Vite 기본 포트는 5173 여기 프로젝트에서는 3000으로 설정)
 EXPOSE 3000
 
+# preview 서버가 모든 인터페이스에서 접근 가능하도록 설정
+ENV VITE_HOST=0.0.0.0
+
 # 컨테이너가 실행될 때 실행할 명령어 (production 모드)
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "3000"]
