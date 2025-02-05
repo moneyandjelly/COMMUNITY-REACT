@@ -3,10 +3,12 @@ import "./RegisterBoard.scss";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { requestRegisterPost } from "./../../../../apis/api/Board/requestRegisterPost";
+import axios from "axios";
 
 const RegisterBoard: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [file, setFile] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -25,6 +27,28 @@ const RegisterBoard: React.FC = () => {
     } catch (error) {
       console.error("Error:", error);
       toast.error("등록에 실패했습니다");
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!file) return;
+
+    try {
+      const fileName = `${Date.now()}-${file.name}`;
+      const { data: presignedUrl } = await axios.get(
+        `http://localhost:7777/presigned-url?fileName=${fileName}`
+      );
+      console.log("Presigned URL:", presignedUrl);
+
+      const response = await axios.put(presignedUrl, file, {
+        headers: { "Content-Type": file.type },
+      });
+      console.log("Upload response:", response);
+
+      alert("업로드 성공!");
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("업로드 실패");
     }
   };
 
@@ -55,6 +79,10 @@ const RegisterBoard: React.FC = () => {
           등록
         </button>
       </form>
+      <div>
+        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+        <button onClick={handleUpload}>Upload</button>
+      </div>
     </div>
   );
 };
