@@ -8,15 +8,21 @@ import axios from "axios";
 const RegisterBoard: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [s3url, setS3Url] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
+      await handleUpload();
+      if (!s3url) {
+        toast.error("이미지가 업로드되지 않았습니다.");
+        return;
+      }
       const userToken = localStorage.getItem("userToken");
-      const data = await requestRegisterPost(title, content, userToken);
+      const data = await requestRegisterPost(title, content, userToken, s3url);
       if (data) {
         toast.success("등록이 완료되었습니다", {
           position: "top-right",
@@ -33,23 +39,23 @@ const RegisterBoard: React.FC = () => {
   const handleUpload = async () => {
     if (!file) return;
 
-    try {
-      const fileName = `${Date.now()}-${file.name}`;
-      const { data: presignedUrl } = await axios.get(
-        `http://localhost:7777/presigned-url?fileName=${fileName}`
-      );
-      console.log("Presigned URL:", presignedUrl);
+    const fileName = `${Date.now()}-${file.name}`;
 
-      const response = await axios.put(presignedUrl, file, {
-        headers: { "Content-Type": file.type },
-      });
-      console.log("Upload response:", response);
+    const { data } = await axios.get(
+      `http://localhost:7777/presigned-url?fileName=${fileName}`
+    );
 
-      alert("업로드 성공!");
-    } catch (error) {
-      console.error("Upload error:", error);
-      alert("업로드 실패");
-    }
+    const { presignedUrl, s3url } = data;
+
+    await axios.put(presignedUrl, file, {
+      headers: {
+        "Content-Type": file.type,
+      },
+    });
+
+    console.log("Uploaded S3 URL:", s3url);
+    setS3Url(s3url);
+    alert(`업로드 성공!\n파일 URL: ${s3url}`);
   };
 
   return (
@@ -80,8 +86,7 @@ const RegisterBoard: React.FC = () => {
         </button>
       </form>
       <div>
-        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-        <button onClick={handleUpload}>Upload</button>
+        <input type="file" onChange={(e) => setFile(e.target.files![0])} />
       </div>
     </div>
   );
