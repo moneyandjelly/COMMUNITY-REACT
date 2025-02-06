@@ -58,6 +58,13 @@ const RegisterBoard: React.FC = () => {
     alert(`업로드 성공!\n파일 URL: ${s3url}`);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setFile(files[0]);
+    }
+  };
+
   return (
     <div className="register-board-container">
       <h2 className="register-board-title">게시글 작성</h2>
@@ -86,7 +93,7 @@ const RegisterBoard: React.FC = () => {
         </button>
       </form>
       <div>
-        <input type="file" onChange={(e) => setFile(e.target.files![0])} />
+        <input type="file" onChange={handleFileChange} />
       </div>
     </div>
   );
