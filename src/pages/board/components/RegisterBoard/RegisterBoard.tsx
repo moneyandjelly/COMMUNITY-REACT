@@ -16,13 +16,20 @@ const RegisterBoard: React.FC = () => {
     e.preventDefault();
 
     try {
-      await handleUpload();
-      if (!s3url) {
-        toast.error("이미지가 업로드되지 않았습니다.");
+      if (file) {
+        await handleUpload();
+      }
+      if (!s3url && file) {
+        toast.error("이미지 업로드에 실패했습니다.");
         return;
       }
       const userToken = localStorage.getItem("userToken");
-      const data = await requestRegisterPost(title, content, userToken, s3url);
+      const data = await requestRegisterPost(
+        title,
+        content,
+        userToken,
+        s3url || undefined
+      );
       if (data) {
         toast.success("등록이 완료되었습니다", {
           position: "top-right",
@@ -59,9 +66,13 @@ const RegisterBoard: React.FC = () => {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      setFile(files[0]);
+    const input = e.target as HTMLInputElement;
+    const files = input.files;
+    if (files) {
+      const selectedFile = files.item(0);
+      if (selectedFile) {
+        setFile(selectedFile);
+      }
     }
   };
 
