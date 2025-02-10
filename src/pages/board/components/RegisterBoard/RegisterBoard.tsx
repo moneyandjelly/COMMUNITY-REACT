@@ -3,6 +3,7 @@ import "./RegisterBoard.scss";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { requestRegisterPost } from "./../../../../apis/api/Board/requestRegisterPost";
+import { requestAddFile } from "./../../../../apis/api/S3/requestAddFile";
 import axios from "axios";
 
 const RegisterBoard: React.FC = () => {
@@ -48,21 +49,22 @@ const RegisterBoard: React.FC = () => {
 
     const fileName = `${Date.now()}-${file.name}`;
 
-    const { data } = await axios.get(
-      `http://localhost:7777/presigned-url?fileName=${fileName}`
-    );
+    try {
+      const { presignedUrl, s3url } = await requestAddFile(fileName);
 
-    const { presignedUrl, s3url } = data;
+      await axios.put(presignedUrl, file, {
+        headers: {
+          "Content-Type": file.type,
+        },
+      });
 
-    await axios.put(presignedUrl, file, {
-      headers: {
-        "Content-Type": file.type,
-      },
-    });
-
-    console.log("Uploaded S3 URL:", s3url);
-    setS3Url(s3url);
-    alert(`업로드 성공!\n파일 URL: ${s3url}`);
+      console.log("Uploaded S3 URL:", s3url);
+      setS3Url(s3url);
+      alert(`업로드 성공!\n파일 URL: ${s3url}`);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      toast.error("파일 업로드에 실패했습니다.");
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
