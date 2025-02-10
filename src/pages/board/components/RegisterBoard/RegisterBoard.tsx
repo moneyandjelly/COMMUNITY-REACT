@@ -20,10 +20,6 @@ const RegisterBoard: React.FC = () => {
       if (file) {
         await handleUpload();
       }
-      if (!s3url && file) {
-        toast.error("이미지 업로드에 실패했습니다.");
-        return;
-      }
       const userToken = localStorage.getItem("userToken");
       const data = await requestRegisterPost(
         title,
